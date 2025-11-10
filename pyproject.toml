@@ -5,7 +5,7 @@ description = "parliament audits your AWS IAM policies"
 authors = [{ name = "Duo Security", email = "scott@summitroute.com" }]
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
-license = "BSD 3"
+license = "BSD-3-Clause"
 keywords = [
     "audit",
     "aws",
@@ -36,8 +36,8 @@ dev = [
     "autoflake",
     "autopep8",
     "coverage",
-    "nose",
     "pylint",
+    "pytest"
 ]
 
 [project.urls]
@@ -47,7 +47,7 @@ Homepage = "https://github.com/duo-labs/parliament"
 parliament = "parliament.cli:cli"
 
 [tool.uv]
-package = false
+package = true
 
 [build-system]
 requires = ["hatchling"]
