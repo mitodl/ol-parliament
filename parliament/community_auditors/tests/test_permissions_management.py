@@ -25,13 +25,10 @@ class TestPermissionsManagement:
             example_policy_string, include_community_auditors=True
         )
 
-        assert_equal(
-            policy.finding_ids,
-            set(
-                [
-                    "PERMISSIONS_MANAGEMENT_ACTIONS",
-                    "RESOURCE_POLICY_PRIVILEGE_ESCALATION",
-                    "RESOURCE_STAR",
-                ]
-            ),
+        assert policy.finding_ids == set(
+            [
+                "PERMISSIONS_MANAGEMENT_ACTIONS",
+                "RESOURCE_POLICY_PRIVILEGE_ESCALATION",
+                "RESOURCE_STAR",
+            ]
         )

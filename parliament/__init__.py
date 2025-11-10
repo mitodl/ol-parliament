@@ -281,7 +281,16 @@ def expand_action(action, raise_exceptions=True):
             "Unknown action {}:{}".format(prefix, unexpanded_action)
         )
 
-    return actions
+    # Deduplicate actions since some services appear multiple times in iam_definition
+    seen = set()
+    deduplicated_actions = []
+    for action in actions:
+        key = (action["service"], action["action"])
+        if key not in seen:
+            seen.add(key)
+            deduplicated_actions.append(action)
+
+    return deduplicated_actions
 
 
 def get_resource_type_matches_from_arn(arn):

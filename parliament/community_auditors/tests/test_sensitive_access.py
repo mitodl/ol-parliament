@@ -34,7 +34,7 @@ class TestSensitiveAccess:
         policy = analyze_policy_string(
             example_policy_string, include_community_auditors=True, config=config
         )
-        assert_equal(policy.finding_ids, set(["SENSITIVE_ACCESS"]))
+        assert policy.finding_ids == set(["SENSITIVE_ACCESS"])
 
         # Ensure nothing triggers when we change the bucket location
         config = {
@@ -45,7 +45,7 @@ class TestSensitiveAccess:
         policy = analyze_policy_string(
             example_policy_string, include_community_auditors=True, config=config
         )
-        assert_equal(policy.finding_ids, set([]))
+        assert policy.finding_ids == set([])
 
         # Ensure we can test multiple actions
         config = {
@@ -65,7 +65,7 @@ class TestSensitiveAccess:
         policy = analyze_policy_string(
             example_policy_string, include_community_auditors=True, config=config
         )
-        assert_equal(policy.finding_ids, set(["SENSITIVE_ACCESS"]))
+        assert policy.finding_ids == set(["SENSITIVE_ACCESS"])
 
         # Ensure multiple actions with none matching works
         config = {
@@ -79,4 +79,4 @@ class TestSensitiveAccess:
         policy = analyze_policy_string(
             example_policy_string, include_community_auditors=True, config=config
         )
-        assert_equal(policy.finding_ids, set([]))
+        assert policy.finding_ids == set([])

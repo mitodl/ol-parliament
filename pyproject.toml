@@ -31,13 +31,16 @@ dependencies = [
     "pyyaml",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "autoflake",
     "autopep8",
     "coverage",
     "pylint",
-    "pytest"
+    "pytest",
+    "beautifulsoup4",
+    "requests",
+    "pytest-cov>=7.0.0",
 ]
 
 [project.urls]

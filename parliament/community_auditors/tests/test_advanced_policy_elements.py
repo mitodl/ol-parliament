@@ -21,7 +21,7 @@ class TestAdvancedPolicyElements:
         }"""
 
         policy = analyze_policy_string(policystr, include_community_auditors=True)
-        assert_equal(policy.finding_ids, set())
+        assert policy.finding_ids == set()
 
         # According to AWS documentation, "This statement is very dangerous,
         # because it allows all actions in AWS on all resources except the
@@ -41,7 +41,7 @@ class TestAdvancedPolicyElements:
 
         policy = analyze_policy_string(policystr, include_community_auditors=True)
 
-        assert_equal(policy.finding_ids, S3_STAR_FINDINGS | {"NOTRESOURCE_WITH_ALLOW"})
+        assert policy.finding_ids == S3_STAR_FINDINGS | {"NOTRESOURCE_WITH_ALLOW"}
 
     def test_notprincipal_allow(self):
         # NotPrincipal is OK with Effect: Deny. This explcitly omits these
@@ -65,7 +65,7 @@ class TestAdvancedPolicyElements:
 
         policy = analyze_policy_string(policystr, include_community_auditors=True)
 
-        assert_equal(policy.finding_ids, set())
+        assert policy.finding_ids == set()
 
         # This implicitly allows everyone _except_ Bob to access BUCKETNAME!
         policystr = """{
@@ -85,4 +85,4 @@ class TestAdvancedPolicyElements:
 
         policy = analyze_policy_string(policystr, include_community_auditors=True)
 
-        assert_equal(policy.finding_ids, S3_STAR_FINDINGS | {"NOTPRINCIPAL_WITH_ALLOW"})
+        assert policy.finding_ids == S3_STAR_FINDINGS | {"NOTPRINCIPAL_WITH_ALLOW"}
