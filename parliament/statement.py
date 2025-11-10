@@ -369,9 +369,13 @@ class Statement:
         for resource_type in privilege_info["resource_types"]:
             resource_type = resource_type["resource_type"]
 
-            # Only check the required resources which have a "*" at the end
-            if "*" not in resource_type:
+            # Only check the required resources (non-empty resource types)
+            # Empty string means the action doesn't require a specific resource type
+            if not resource_type:
                 continue
+
+            # Remove trailing asterisk if present (old format compatibility)
+            resource_type = resource_type.rstrip("*")
 
             arn_format = get_arn_format(
                 resource_type, privilege_info["service_resources"]
