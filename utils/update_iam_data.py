@@ -15,14 +15,11 @@ BASE_DOCUMENTATION_URL = "https://docs.aws.amazon.com/service-authorization/late
 
 def get_links_from_base_actions_resources_conditions_page():
     """Gets the links from the actions, resources, and conditions keys page, and returns their filenames."""
-    
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-    }
-    html = requests.get(BASE_DOCUMENTATION_URL, headers=headers)
+    html = requests.get(BASE_DOCUMENTATION_URL)
+    html.raise_for_status()
     soup = BeautifulSoup(html.content, "html.parser")
     html_filenames = []
-    for i in soup.find("div", {"class": "highlights"}).findAll("a"):
+    for i in soup.find("div", {"class": "highlights"}).find_all("a"):
         html_filenames.append(i["href"])
     return html_filenames
 
@@ -326,7 +323,7 @@ for filename in [f for f in listdir(mypath) if isfile(join(mypath, f))]:
 
 schema.sort(key=lambda x: x["prefix"])
 
-print(f"--------------------")
+print("--------------------")
 # write json to file
 iam_definition_file_path = "parliament/iam_definition.json"
 with open(

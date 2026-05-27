@@ -225,11 +225,11 @@ def is_value_in_correct_format_for_type(type_needed, values):
         # Binary is a base64 encoded value, like "QmluYXJ5VmFsdWVJbkJhc2U2NA=="
         "Binary": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
         "Bool": "^(true)|(false)$",
-        "Date": "^\d{4}-\d{2}-\d{2}T\d\d:\d\d:\d\dZ$",
+        "Date": r"^\d{4}-\d{2}-\d{2}T\d\d:\d\d:\d\dZ$",
         # Ip is either IPv4 or IPv6 (ex. 203.0.113.0/24 or 2001:DB8:1234:5678::/64)
         # and may not have a range specified (ex. /32)
-        "Ip": "^(\d+.\d+.\d+.\d+(/\d+)?)|\d*:\d*:\d*:\d*:\d*:\d*(/\d+)?$",
-        "Number": "^\d+$",
+        "Ip": r"^(\d+.\d+.\d+.\d+(/\d+)?)|\d*:\d*:\d*:\d*:\d*:\d*(/\d+)?$",
+        "Number": r"^\d+$",
         "String": ".*",  # Strings can be anything
     }
 
@@ -453,9 +453,9 @@ class Statement:
                 if key == "AWS":
                     for aws_principal in make_list(json_object[1]):
                         text = aws_principal.value
-                        account_id_regex = re.compile("^\d{12}$")
+                        account_id_regex = re.compile(r"^\d{12}$")
                         arn_regex = re.compile(
-                            "^arn:[-a-z\*]*:iam::(\d{12}|cloudfront|):.*$"
+                            r"^arn:[-a-z\*]*:iam::(\d{12}|cloudfront|):.*$"
                         )
 
                         if text == "*":
@@ -472,7 +472,7 @@ class Statement:
                     for federation in make_list(json_object[1]):
                         federation = federation.value
                         saml_regex = re.compile(
-                            "^arn:[-a-z\*]*:iam::\d{12}:saml-provider/.*$"
+                            r"^arn:[-a-z\*]*:iam::\d{12}:saml-provider/.*$"
                         )
                         if federation in [
                             "cognito-identity.amazonaws.com",

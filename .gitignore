@@ -16,3 +16,4 @@ tmp/*
 
 # generated documentation folder
 docs/
+.pi-lens/

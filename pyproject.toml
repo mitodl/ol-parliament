@@ -1,8 +1,11 @@
 [project]
-name = "parliament"
+name = "ol-parliament"
 version = "1.7.0"
-description = "parliament audits your AWS IAM policies"
-authors = [{ name = "Duo Security", email = "scott@summitroute.com" }]
+description = "ol-parliament audits your AWS IAM policies (MIT Open Learning fork of parliament)"
+authors = [
+    { name = "MIT Open Learning", email = "ol-devops@mit.edu" },
+    { name = "Duo Security", email = "scott@summitroute.com" },
+]
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -18,11 +21,11 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "boto3",
@@ -44,7 +47,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/duo-labs/parliament"
+Homepage = "https://github.com/mitodl/parliament"
+Source = "https://github.com/mitodl/parliament"
+Issues = "https://github.com/mitodl/parliament/issues"
 
 [project.scripts]
 parliament = "parliament.cli:cli"
@@ -58,6 +63,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.version]
 path = "parliament/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["parliament"]
 
 [tool.hatch.build.targets.sdist]
 include = [
