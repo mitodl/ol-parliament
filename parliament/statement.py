@@ -799,7 +799,6 @@ class Statement:
         expanded_actions = []
         has_malformed_action = False
         for action in actions:
-
             # Handle special case where all actions are allowed
             if action.value == "*" or action.value == "*:*":
                 # TODO Should ensure the resource is "*" with this action

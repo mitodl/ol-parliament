@@ -3,47 +3,36 @@ name = "ol-parliament"
 version = "1.7.0"
 description = "ol-parliament audits your AWS IAM policies (MIT Open Learning fork of parliament)"
 authors = [
-    { name = "MIT Open Learning", email = "ol-devops@mit.edu" },
-    { name = "Duo Security", email = "scott@summitroute.com" },
+  { name = "MIT Open Learning", email = "ol-devops@mit.edu" },
+  { name = "Duo Security", email = "scott@summitroute.com" },
 ]
 requires-python = ">=3.10,<3.15"
 readme = "README.md"
 license = "BSD-3-Clause"
-keywords = [
-    "audit",
-    "aws",
-    "iam",
-    "lint",
-    "parliament",
-]
+keywords = ["audit", "aws", "iam", "lint", "parliament"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
-dependencies = [
-    "boto3",
-    "jmespath",
-    "json-cfg",
-    "pyyaml",
-]
+dependencies = ["boto3", "jmespath", "json-cfg", "pyyaml"]
 
 [dependency-groups]
 dev = [
-    "autoflake",
-    "autopep8",
-    "coverage",
-    "pylint",
-    "pytest",
-    "beautifulsoup4",
-    "requests",
-    "pytest-cov>=7.0.0",
+  "autoflake",
+  "autopep8",
+  "coverage",
+  "pylint",
+  "pytest",
+  "beautifulsoup4",
+  "requests",
+  "pytest-cov>=7.0.0",
 ]
 
 [project.urls]
@@ -61,13 +50,9 @@ package = true
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-path = "parliament/__init__.py"
-
 [tool.hatch.build.targets.wheel]
 packages = ["parliament"]
+exclude = ["parliament/community_auditors/tests"]
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/parliament",
-]
+include = ["/parliament"]
