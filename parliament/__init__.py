@@ -30,10 +30,10 @@ def override_config(override_config_path):
 
     # Load the override file
     with open(override_config_path) as f:
-        override_config = yaml.safe_load(f)
+        override_data = yaml.safe_load(f) or {}
 
     # Over-write the settings
-    for finding_type, settings in override_config.items():  # noqa: F821 (defined in with-block above)
+    for finding_type, settings in override_data.items():
         if finding_type not in config:
             config[finding_type] = {}
         for setting, setting_value in settings.items():
@@ -42,7 +42,7 @@ def override_config(override_config_path):
 
 def enhance_finding(finding):
     if finding.issue not in config:
-        raise Exception(f"Uknown finding issue: {finding.issue}")
+        raise Exception(f"Unknown finding issue: {finding.issue}")
     config_settings = config[finding.issue]
     finding.severity = config_settings["severity"]
     finding.title = config_settings["title"]

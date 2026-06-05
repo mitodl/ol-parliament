@@ -12,8 +12,14 @@ This library duplicates (and adds to!) much of the functionality in the web cons
 
 # Installation
 ```
-pip install parliament
+pip install ol-parliament
 ```
+
+> **Note:** The original `parliament` package (Duo Security, v1.6.4) installs into the same `parliament/` namespace. If both are installed, whichever was installed last wins, and the old package will fail on Python 3.12+ due to a missing `pkg_resources` dependency. Uninstall it first:
+> ```
+> pip uninstall parliament
+> pip install ol-parliament
+> ```
 
 # Usage
 ```
