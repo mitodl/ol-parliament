@@ -1,6 +1,6 @@
 [project]
 name = "ol-parliament"
-version = "1.7.0"
+version = "1.7.1"
 description = "ol-parliament audits your AWS IAM policies (MIT Open Learning fork of parliament)"
 authors = [
   { name = "MIT Open Learning", email = "ol-devops@mit.edu" },
