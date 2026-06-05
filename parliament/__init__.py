@@ -2,15 +2,15 @@
 This library is a linter for AWS IAM policies.
 """
 
-__version__ = "1.6.4"
+__version__ = "1.7.1"
 
 import fnmatch
 import functools
 import json
-import jsoncfg
 import re
-
 from importlib.resources import files
+
+import jsoncfg
 import yaml
 
 # On initialization, load the IAM data
@@ -29,10 +29,11 @@ def override_config(override_config_path):
         return
 
     # Load the override file
-    override_config = yaml.safe_load(open(override_config_path, "r"))
+    with open(override_config_path) as f:
+        override_data = yaml.safe_load(f) or {}
 
     # Over-write the settings
-    for finding_type, settings in override_config.items():
+    for finding_type, settings in override_data.items():
         if finding_type not in config:
             config[finding_type] = {}
         for setting, setting_value in settings.items():
@@ -41,7 +42,7 @@ def override_config(override_config_path):
 
 def enhance_finding(finding):
     if finding.issue not in config:
-        raise Exception("Uknown finding issue: {}".format(finding.issue))
+        raise Exception(f"Unknown finding issue: {finding.issue}")
     config_settings = config[finding.issue]
     finding.severity = config_settings["severity"]
     finding.title = config_settings["title"]
@@ -67,7 +68,7 @@ def analyze_policy_string(
         policy = Policy(None)
         policy.add_finding(
             "MALFORMED_JSON",
-            detail="json parsing error: {}".format(e),
+            detail=f"json parsing error: {e}",
             location={"line": e.line, "column": e.column},
         )
         return policy
@@ -120,26 +121,25 @@ def is_arn_match(resource_type, arn_format, resource):
     if arn_format == "*" or resource == "*":
         return True
 
-    if "bucket" in resource_type:
+    if "bucket" in resource_type and "/" in strip_var_from_arn(resource, "theVar"):
         # We have to do a special case here for S3 buckets
         # and since resources can use variables which contain / need to replace them
-        if "/" in strip_var_from_arn(resource, "theVar"):
-            return False
+        return False
 
     # The ARN has at least 6 parts, separated by a colon. Ensure these exist.
     arn_parts = arn_format.split(":")
     if len(arn_parts) < 6:
-        raise Exception("Unexpected format for ARN: {}".format(arn_format))
+        raise Exception(f"Unexpected format for ARN: {arn_format}")
     resource_parts = resource.split(":")
     if len(resource_parts) < 6:
-        raise Exception("Unexpected format for resource: {}".format(resource))
+        raise Exception(f"Unexpected format for resource: {resource}")
 
     # For the first 5 parts (ex. arn:aws:SERVICE:REGION:ACCOUNT:), ensure these match appropriately
     # We do this because we don't want "arn:*:s3:::*/*" and "arn:aws:logs:*:*:/aws/cloudfront/*" to return True
-    for position in range(0, 5):
-        if arn_parts[position] == "*" and resource_parts[position] != "":
-            continue
-        elif resource_parts[position] == "*":
+    for position in range(5):
+        if (
+            arn_parts[position] == "*" and resource_parts[position] != ""
+        ) or resource_parts[position] == "*":
             continue
         elif arn_parts[position] == resource_parts[position]:
             continue
@@ -186,19 +186,18 @@ def is_arn_strictly_valid(resource_type, arn_format, resource):
         # : or / and then anything else excluding the resource type string starting with a *
         arn_id_resource_type = re.match(r"(^[^\*][\w-]+)[\/\:].+", arn_id)
 
-        if arn_id_resource_type != None and resource_id != "*":
-
+        if (
+            arn_id_resource_type is not None
+            and resource_id != "*"
+            and not resource_id.startswith(arn_id_resource_type[1])
+        ):
             # https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namesspaces
             # The following is not allowed: arn:aws:iam::123456789012:u*
-            if not (resource_id.startswith(arn_id_resource_type[1])):
-                return False
+            return False
 
         # replace aws variable and check for other colons
         resource_id_no_vars = strip_var_from_arn(resource_id)
-        if ":" in resource_id_no_vars and not ":" in arn_id:
-            return False
-
-        return True
+        return ":" not in resource_id_no_vars or ":" in arn_id
     return False
 
 
@@ -256,11 +255,14 @@ def expand_action(action, raise_exceptions=True):
         if service["prefix"] == prefix.lower() or prefix == "*":
             service_match = service
 
-            if len(service["privileges"]) == 0 and prefix != "*":
+            if (
+                len(service["privileges"]) == 0
+                and prefix != "*"
+                and unexpanded_action.lower() == "*"
+            ):
                 # Service has no privileges, so the action must be *
                 # For example iq:*
-                if unexpanded_action.lower() == "*":
-                    return []
+                return []
 
             for privilege in service["privileges"]:
                 if fnmatch.fnmatchcase(
@@ -274,12 +276,10 @@ def expand_action(action, raise_exceptions=True):
                     )
 
     if not service_match and raise_exceptions:
-        raise UnknownPrefixException("Unknown prefix {}".format(prefix))
+        raise UnknownPrefixException(f"Unknown prefix {prefix}")
 
     if len(actions) == 0 and raise_exceptions:
-        raise UnknownActionException(
-            "Unknown action {}:{}".format(prefix, unexpanded_action)
-        )
+        raise UnknownActionException(f"Unknown action {prefix}:{unexpanded_action}")
 
     # Deduplicate actions since some services appear multiple times in iam_definition
     seen = set()
@@ -338,4 +338,4 @@ def get_privilege_matches_for_resource_type(resource_type_matches):
 
 
 # Import moved here to deal with cyclic dependency
-from .policy import Policy
+from .policy import Policy  # noqa: E402

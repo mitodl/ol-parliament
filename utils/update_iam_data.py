@@ -39,7 +39,7 @@ def update_html_docs_directory(html_docs_destination):
     # Remove the relative path so we can download it
     html_filenames = [sub.replace("./", "") for sub in initial_html_filenames_list]
     pos = 0
-    
+
     for page in html_filenames:
         pos += 1
         print(f"Downloading {pos} of {len(html_filenames)} - {page}")
