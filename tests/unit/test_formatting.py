@@ -294,6 +294,36 @@ class TestFormatting:
         )
         assert policy.finding_ids == set(["RESOURCE_STAR"])
 
+    def test_condition_type_bool_array(self):
+        # https://github.com/duo-labs/parliament/issues/236
+        # IAM allows a condition value to be an array of strings, not just a
+        # bare string, so Bool with ["true"] must not raise.
+        policy = analyze_policy_string(
+            """{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::123456789012:role/Example",
+        "Condition": {"Bool": {"aws:MultiFactorAuthPresent": ["true"]}} }}""",
+            ignore_private_auditors=True,
+        )
+        assert policy.finding_ids == set()
+
+        policy = analyze_policy_string(
+            """{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::123456789012:role/Example",
+        "Condition": {"Bool": {"aws:MultiFactorAuthPresent": ["notabool"]}} }}""",
+            ignore_private_auditors=True,
+        )
+        assert policy.finding_ids == set(
+            ["MISMATCHED_TYPE_OPERATION_TO_NULL"]
+        ), "Non-boolean value in array form"
+
     def test_condition_with_null(self):
         policy = analyze_policy_string(
             """{

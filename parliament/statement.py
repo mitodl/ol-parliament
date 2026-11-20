@@ -527,12 +527,14 @@ class Statement:
         if operator_type_requirement == "Bool":
             # Get the value that is being compared against
             for c in condition_block:
-                value = str(c[1].value).lower()
-                if value != "true" and value != "false":
-                    self.add_finding(
-                        "MISMATCHED_TYPE_OPERATION_TO_NULL", location=condition_block
-                    )
-                    return False
+                for v in make_list(c[1]):
+                    value = str(v.value).lower()
+                    if value != "true" and value != "false":
+                        self.add_finding(
+                            "MISMATCHED_TYPE_OPERATION_TO_NULL",
+                            location=condition_block,
+                        )
+                        return False
 
         for block in condition_block:
             key = block[0]
