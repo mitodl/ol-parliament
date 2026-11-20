@@ -44,6 +44,9 @@ Issues = "https://github.com/mitodl/parliament/issues"
 parliament = "parliament.cli:cli"
 
 [tool.uv]
+# Don't install a version until it has been on PyPI for 7 days. Relative values need uv 0.9.17+.
+exclude-newer = "7d"
+required-version = ">=0.9.17"
 package = true
 
 [build-system]
